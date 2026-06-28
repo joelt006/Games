@@ -137,7 +137,8 @@ function makeTimer(displayEl) {
    TRIVIA QUIZ
 =================================================================== */
 (function quizGame() {
-  const QUESTIONS = [
+  // Full pool — each round picks ROUND_SIZE random questions from here.
+  const POOL = [
     { q: "Which planet is known as the Red Planet?", a: ["Venus", "Mars", "Jupiter", "Mercury"], correct: 1 },
     { q: "What is the largest mammal on Earth?", a: ["Elephant", "Blue whale", "Giraffe", "Hippo"], correct: 1 },
     { q: "In which language is this site written?", a: ["Python", "Rust", "JavaScript", "Go"], correct: 2 },
@@ -146,7 +147,39 @@ function makeTimer(displayEl) {
     { q: "Which gas do plants absorb from the air?", a: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"], correct: 2 },
     { q: "What year did the first iPhone release?", a: ["2005", "2007", "2009", "2010"], correct: 1 },
     { q: "Which ocean is the largest?", a: ["Atlantic", "Indian", "Arctic", "Pacific"], correct: 3 },
+    { q: "What is the capital of Japan?", a: ["Seoul", "Beijing", "Tokyo", "Bangkok"], correct: 2 },
+    { q: "How many sides does a hexagon have?", a: ["5", "6", "7", "8"], correct: 1 },
+    { q: "Which element has the symbol 'O'?", a: ["Gold", "Oxygen", "Osmium", "Iron"], correct: 1 },
+    { q: "Who painted the Mona Lisa?", a: ["Van Gogh", "Picasso", "Da Vinci", "Rembrandt"], correct: 2 },
+    { q: "What is the smallest prime number?", a: ["0", "1", "2", "3"], correct: 2 },
+    { q: "Which country has the most population?", a: ["India", "USA", "China", "Indonesia"], correct: 0 },
+    { q: "What does HTML stand for?", a: ["Hyper Text Markup Language", "High Tech Modern Language", "Home Tool Markup Language", "Hyperlinks Text Mark Language"], correct: 0 },
+    { q: "How many strings does a standard guitar have?", a: ["4", "5", "6", "7"], correct: 2 },
   ];
+
+  const ROUND_SIZE = 8; // questions per playthrough
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // Build a fresh randomized round: random questions, each with shuffled answers.
+  function buildRound() {
+    return shuffle(POOL)
+      .slice(0, ROUND_SIZE)
+      .map((item) => {
+        const correctText = item.a[item.correct];
+        const options = shuffle(item.a);
+        return { q: item.q, options, correct: options.indexOf(correctText) };
+      });
+  }
+
+  let questions = [];
 
   const numEl = document.getElementById("quiz-num");
   const totalEl = document.getElementById("quiz-total");
@@ -157,19 +190,19 @@ function makeTimer(displayEl) {
   const resultEl = document.getElementById("quiz-result");
   const bodyEl = document.getElementById("quiz-body");
 
-  totalEl.textContent = QUESTIONS.length;
+  totalEl.textContent = ROUND_SIZE;
   let idx = 0;
   let score = 0;
   let answered = false;
 
   function render() {
     answered = false;
-    const item = QUESTIONS[idx];
+    const item = questions[idx];
     numEl.textContent = idx + 1;
     questionEl.textContent = item.q;
     nextBtn.hidden = true;
     answersEl.innerHTML = "";
-    item.a.forEach((text, i) => {
+    item.options.forEach((text, i) => {
       const btn = document.createElement("button");
       btn.textContent = text;
       btn.addEventListener("click", () => choose(i, item.correct, btn));
@@ -194,18 +227,19 @@ function makeTimer(displayEl) {
 
   nextBtn.addEventListener("click", () => {
     idx++;
-    if (idx >= QUESTIONS.length) finish();
+    if (idx >= questions.length) finish();
     else render();
   });
 
   function finish() {
     bodyEl.hidden = true;
     resultEl.hidden = false;
-    const pct = Math.round((score / QUESTIONS.length) * 100);
-    resultEl.textContent = `You scored ${score}/${QUESTIONS.length} (${pct}%) 🎉`;
+    const pct = Math.round((score / questions.length) * 100);
+    resultEl.textContent = `You scored ${score}/${questions.length} (${pct}%) 🎉`;
   }
 
   function restart() {
+    questions = buildRound();
     idx = 0;
     score = 0;
     scoreEl.textContent = "0";
@@ -215,7 +249,7 @@ function makeTimer(displayEl) {
   }
 
   document.getElementById("quiz-restart").addEventListener("click", restart);
-  render();
+  restart();
 })();
 
 /* ===================================================================
