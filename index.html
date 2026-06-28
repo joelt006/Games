@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Play four browser mini-games: memory match, quiz, typing test, and a sliding puzzle. No install, works on mobile." />
+  <title>Mini Arcade — Memory · Quiz · Typing · Puzzle</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>🎮 Mini Arcade</h1>
+    <p class="tagline">Four little games, one page. No downloads.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Games">
+    <button class="tab is-active" role="tab" aria-selected="true" data-target="memory">🧠 Memory</button>
+    <button class="tab" role="tab" aria-selected="false" data-target="quiz">❓ Quiz</button>
+    <button class="tab" role="tab" aria-selected="false" data-target="typing">⌨️ Typing</button>
+    <button class="tab" role="tab" aria-selected="false" data-target="puzzle">🧩 Puzzle</button>
+  </nav>
+
+  <main>
+    <!-- ===== MEMORY ===== -->
+    <section id="memory" class="game is-active" role="tabpanel">
+      <div class="game-head">
+        <h2>Memory Match</h2>
+        <div class="stats">
+          <span>Moves: <strong id="mem-moves">0</strong></span>
+          <span>Matched: <strong id="mem-matched">0</strong>/8</span>
+          <span>Time: <strong id="mem-time">0s</strong></span>
+        </div>
+        <button class="btn" id="mem-restart">↻ New Game</button>
+      </div>
+      <p class="hint">Flip cards to find all matching pairs.</p>
+      <div id="mem-board" class="mem-board"></div>
+      <p id="mem-win" class="win-msg" hidden>🎉 Solved!</p>
+    </section>
+
+    <!-- ===== QUIZ ===== -->
+    <section id="quiz" class="game" role="tabpanel" hidden>
+      <div class="game-head">
+        <h2>Trivia Quiz</h2>
+        <div class="stats">
+          <span>Question: <strong id="quiz-num">1</strong>/<span id="quiz-total">0</span></span>
+          <span>Score: <strong id="quiz-score">0</strong></span>
+        </div>
+        <button class="btn" id="quiz-restart">↻ Restart</button>
+      </div>
+      <div id="quiz-body">
+        <p id="quiz-question" class="quiz-question"></p>
+        <div id="quiz-answers" class="quiz-answers"></div>
+        <button class="btn primary" id="quiz-next" hidden>Next →</button>
+      </div>
+      <div id="quiz-result" class="win-msg" hidden></div>
+    </section>
+
+    <!-- ===== TYPING ===== -->
+    <section id="typing" class="game" role="tabpanel" hidden>
+      <div class="game-head">
+        <h2>Typing Test</h2>
+        <div class="stats">
+          <span>WPM: <strong id="typ-wpm">0</strong></span>
+          <span>Accuracy: <strong id="typ-acc">100%</strong></span>
+          <span>Time: <strong id="typ-time">0s</strong></span>
+        </div>
+        <button class="btn" id="typ-restart">↻ New Text</button>
+      </div>
+      <p class="hint">Start typing to begin the timer.</p>
+      <div id="typ-display" class="typ-display"></div>
+      <textarea id="typ-input" class="typ-input" rows="3" placeholder="Type here…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+      <p id="typ-result" class="win-msg" hidden></p>
+    </section>
+
+    <!-- ===== PUZZLE ===== -->
+    <section id="puzzle" class="game" role="tabpanel" hidden>
+      <div class="game-head">
+        <h2>Sliding Puzzle</h2>
+        <div class="stats">
+          <span>Moves: <strong id="puz-moves">0</strong></span>
+          <span>Time: <strong id="puz-time">0s</strong></span>
+        </div>
+        <button class="btn" id="puz-shuffle">↻ Shuffle</button>
+      </div>
+      <p class="hint">Click a tile next to the gap to slide it. Order 1–15 to win.</p>
+      <div id="puz-board" class="puz-board"></div>
+      <p id="puz-win" class="win-msg" hidden>🎉 Puzzle solved!</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Built with plain HTML, CSS &amp; JS · Hosted free on GitHub Pages</p>
+  </footer>
+
+  <script src="games.js"></script>
+</body>
+</html>
